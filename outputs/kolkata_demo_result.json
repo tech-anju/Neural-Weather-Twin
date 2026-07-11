@@ -1,0 +1,10 @@
+{
+  "event": "kolkata_sept_2025",
+  "n_hours": 48,
+  "advance_warning_hours": 2,
+  "first_model_warning_hour": 5,
+  "first_truth_warning_hour": 7,
+  "peak_rainfall_mm_h": 61.17714397276288,
+  "peak_rain_hour": 23,
+  "peak_depth_m": 2.5
+}
