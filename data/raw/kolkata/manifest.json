@@ -1,0 +1,14 @@
+{
+  "dem": "data/raw/kolkata/kolkata_dem.tif",
+  "osm": "{'drains':    waterway                                     geometry\n0     drain  LINESTRING (88.25055 22.45, 88.25055 22.65)\n1     drain  LINESTRING (88.27765 22.45, 88.27765 22.65)\n2     drain  LINESTRING (88.30531 22.45, 88.30531 22.65)\n3     drain  LINESTRING (88.33378 22.45, 88.33378 22.65)\n4     drain  LINESTRING (88.36554 22.45, 88.36554 22.65)\n5     drain  LINESTRING (88.39451 22.45, 88.39451 22.65)\n6     drain  LINESTRING (88.42186 22.45, 88.42186 22.65)\n7     drain  LINESTRING (88.45092 22.45, 88.45092 22.65)\n8     canal  LINESTRING (88.25 22.45017, 88.45 22.45017)\n9     drain  LINESTRING (88.25 22.49126, 88.45 22.49126)\n10    drain  LINESTRING (88.25 22.53143, 88.45 22.53143)\n11    drain  LINESTRING (88.25 22.57092, 88.45 22.57092)\n12    canal  LINESTRING (88.25 22.61145, 88.45 22.61145)\n13    drain    LINESTRING (88.25 22.6492, 88.45 22.6492), 'water': Empty GeoDataFrame\nColumns: []\nIndex: [], 'roads': Empty GeoDataFrame\nColumns: []\nIndex: []}",
+  "rainfall": "data/raw/kolkata/kolkata_rainfall_2024-08-01_to_2024-09-30.csv",
+  "flood_masks": {
+    "2021-07-30": "data/raw/kolkata/kolkata_flood_mask_2021-07-30.npy",
+    "2022-06-15": "data/raw/kolkata/kolkata_flood_mask_2022-06-15.npy",
+    "2023-09-12": "data/raw/kolkata/kolkata_flood_mask_2023-09-12.npy",
+    "2024-09-21": "data/raw/kolkata/kolkata_flood_mask_2024-09-21.npy"
+  },
+  "all_ok": "True",
+  "city": "kolkata",
+  "output_dir": "data/raw/kolkata"
+}

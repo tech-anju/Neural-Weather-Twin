@@ -1,0 +1,49 @@
+{
+  "city": "kolkata",
+  "resolution_m": 50,
+  "shape": [
+    446,
+    412,
+    6
+  ],
+  "lat_min": 22.45,
+  "lat_max": 22.65,
+  "lon_min": 88.25,
+  "lon_max": 88.45,
+  "dy_deg": 0.0004491555874955084,
+  "dx_deg": 0.00048633848632543777,
+  "crs": "EPSG:4326",
+  "feature_names": [
+    "elevation_m",
+    "slope_deg",
+    "flow_accumulation",
+    "drain_density",
+    "impervious_fraction",
+    "manning_n"
+  ],
+  "normalisation": {
+    "elevation_m": {
+      "method": "z-score",
+      "mean": 5.0545477867126465,
+      "std": 1.581077218055725
+    },
+    "slope_deg": {
+      "method": "clip_then_minmax",
+      "clip_max": 45.0
+    },
+    "flow_accumulation": {
+      "method": "log1p_then_minmax"
+    },
+    "drain_density": {
+      "method": "minmax"
+    },
+    "impervious_fraction": {
+      "method": "none"
+    },
+    "manning_n": {
+      "method": "minmax",
+      "min": 0.013,
+      "max": 0.1
+    }
+  }
+}
