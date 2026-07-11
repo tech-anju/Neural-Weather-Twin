@@ -270,26 +270,6 @@ training:
 
 ---
 
-## REST API
-
-```bash
-uvicorn app.inference:api --host 0.0.0.0 --port 8000
-```
-
-```http
-POST /predict/uniform
-{ "rainfall_uniform_mm": 55.0, "duration_hours": 3 }
-
-→ {
-    "highest_alert": "WARNING",
-    "max_depth_m": 0.41,
-    "flooded_pct": 18.3,
-    "ward_alerts": { "1": {"level": 2, "name": "WARNING"}, ... },
-    "inference_ms": 280
-  }
-```
-
----
 
 ## References
 
