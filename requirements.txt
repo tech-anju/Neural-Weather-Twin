@@ -1,0 +1,53 @@
+# ================================================================
+#  Neural Weather Twin — Dependencies
+# ================================================================
+
+# Core ML
+torch>=2.1.0
+numpy>=1.24.0
+scipy>=1.11.0
+scikit-learn>=1.3.0
+pandas>=2.0.0
+
+# Geospatial
+geopandas>=0.14.0
+rasterio>=1.3.0            # GeoTIFF / DEM reading
+pyproj>=3.6.0              # coordinate transforms
+shapely>=2.0.0             # geometry operations
+osmnx>=1.7.0,<2.0          # pin: v2.0 has breaking API changes
+fiona>=1.9.0               # vector data I/O
+pysheds>=0.3.5             # flow direction + accumulation (replaces richdem)
+lxml>=4.9.0                # XML parsing (required by fiona/geopandas)
+
+# Satellite / remote sensing
+cdsetool>=0.2.0            # Copernicus Data Space API (sentinelsat is obsolete — SciHub shut down Apr 2023)
+requests>=2.31.0           # used for SRTM DEM download + Copernicus REST calls
+
+# Meteorological
+pykrige>=1.7.0             # Kriging interpolation for rain gauge data
+
+# Visualisation
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.18.0
+folium>=0.15.0             # interactive leaflet maps
+branca>=0.7.0              # folium colour scales
+
+# App
+streamlit>=1.30.0
+streamlit-folium>=0.18.0   # folium maps inside Streamlit
+fastapi>=0.104.0
+uvicorn>=0.24.0
+
+# Utilities
+pyyaml>=6.0
+tqdm>=4.66.0
+rich>=13.6.0
+python-dotenv>=1.0.0
+tensorboard>=2.14.0
+
+# Testing
+pytest>=7.4.0
+
+# Optional — uncomment when real IMD gridded data download is needed
+# imdlib>=0.1.7            # official IMD gridded rainfall reader

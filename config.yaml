@@ -1,0 +1,153 @@
+# ================================================================
+#  Neural Weather Twin — Hyperlocal Flood Prediction
+#  Configuration file
+# ================================================================
+
+project:
+  name: "flood_twin_kolkata"
+  version: "1.0.0"
+  seed: 42
+  city: "kolkata"           # kolkata | chennai | mumbai | delhi
+
+# ── City bounding boxes ──────────────────────────────────────────
+cities:
+  kolkata:
+    lat_min: 22.45
+    lat_max: 22.65
+    lon_min: 88.25
+    lon_max: 88.45
+    name_imd: "KOLKATA"
+    population: 4500000
+  chennai:
+    lat_min: 12.85
+    lat_max: 13.10
+    lon_min: 80.15
+    lon_max: 80.35
+    name_imd: "CHENNAI"
+    population: 7100000
+  mumbai:
+    lat_min: 18.90
+    lat_max: 19.10
+    lon_min: 72.80
+    lon_max: 72.98
+    name_imd: "MUMBAI"
+    population: 12400000
+
+# ── Spatial grid ─────────────────────────────────────────────────
+grid:
+  resolution_m: 50          # metres per cell (50m = street-block level)
+  dem_source: "srtm_30m"
+  coord_system: "EPSG:4326"
+  features:
+    - elevation_m            # terrain height
+    - slope_deg              # terrain slope
+    - flow_accumulation      # upstream drainage area
+    - drain_density          # drain pipe density (OSM)
+    - impervious_fraction    # fraction of cell that is paved/built
+    - manning_n              # Manning's roughness coefficient
+
+# ── Data sources ─────────────────────────────────────────────────
+data:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  cache_dir: "data/cache"
+
+  rainfall:
+    source: "imd"            # imd | era5 | chirps
+    temporal_res: "hourly"
+    interpolation: "kriging" # kriging | idw | nearest
+
+  flood_labels:
+    source: "sentinel1_sar"  # sentinel1_sar | nrsc | manual
+    threshold_m: 0.10        # min flood depth to count as flooded
+
+  train_events:
+    - {start: "2019-07-01", end: "2019-09-30", label: "monsoon_2019"}
+    - {start: "2020-07-01", end: "2020-09-30", label: "monsoon_2020"}
+    - {start: "2021-07-01", end: "2021-09-30", label: "monsoon_2021"}
+    - {start: "2022-07-01", end: "2022-09-30", label: "monsoon_2022"}
+    - {start: "2023-07-01", end: "2023-09-30", label: "monsoon_2023"}
+
+  val_events:
+    - {start: "2023-10-01", end: "2023-10-31", label: "oct_2023"}
+
+  test_events:
+    - {start: "2024-09-01", end: "2024-09-30", label: "kolkata_sept_2024"}
+
+# ── Model ────────────────────────────────────────────────────────
+model:
+  # ConvLSTM encoder
+  convlstm:
+    input_channels: 8        # rainfall(1) + terrain(6) + prev_depth(1)
+    hidden_channels: [64, 64, 32]
+    kernel_size: 3
+    num_layers: 3
+    batch_first: true
+    dropout: 0.2
+
+  # Prediction head
+  decoder:
+    out_channels: 3          # depth (h), x-velocity (u), y-velocity (v)
+    forecast_steps: 3        # T+1h, T+2h, T+3h
+    use_uncertainty: true    # MC Dropout uncertainty estimates
+
+  # Input sequence
+  input_steps: 6             # use past 6 hours as input
+  output_steps: 3            # forecast 3 hours ahead
+
+# ── Physics (Saint-Venant equations) ─────────────────────────────
+physics:
+  gravity: 9.81              # m/s²
+  lambda_continuity: 0.5     # weight of continuity equation residual
+  lambda_momentum: 0.3       # weight of momentum equation residual
+  lambda_boundary: 0.1       # weight of boundary condition residual
+  dt: 3600                   # timestep in seconds (1 hour)
+  manning_default: 0.035     # default Manning's n for urban surfaces
+  min_depth: 0.001           # wetting/drying threshold (m)
+
+# ── Training ─────────────────────────────────────────────────────
+training:
+  epochs: 60
+  batch_size: 8
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler: "cosine_warmup"
+  warmup_epochs: 2
+  gradient_clip: 1.0
+  early_stopping_patience: 20
+  mixed_precision: true
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"
+  save_best_metric: "csi"    # Critical Success Index
+  log_every: 10
+
+# ── Evaluation ───────────────────────────────────────────────────
+evaluation:
+  flood_threshold_m: 0.10    # depth threshold for binary flood/no-flood
+  metrics:
+    - csi                    # Critical Success Index (main metric)
+    - pod                    # Probability of Detection
+    - far                    # False Alarm Ratio
+    - bias                   # Frequency Bias
+    - rmse                   # RMSE of depth (m)
+    - mae                    # MAE of depth (m)
+    - fss                    # Fractions Skill Score
+  bootstrap_ci: true
+  n_bootstrap: 500
+
+# ── Alerts ───────────────────────────────────────────────────────
+alerts:
+  thresholds:
+    watch:   0.08            # metres — low risk, monitor
+    warning: 0.15           # metres — prepare evacuation
+    danger:  0.35          # metres — immediate action
+  alert_horizon_h: 3         # hours ahead to generate alerts
+  min_cell_fraction: 0.05    # fraction of ward cells flooded to trigger alert
+
+# ── App ──────────────────────────────────────────────────────────
+app:
+  port: 8501
+  map_center: [22.55, 88.35] # Kolkata
+  map_zoom: 12
+  refresh_interval_min: 15   # live forecast refresh (minutes)
+  colormap: "YlOrRd"         # flood depth colour scale
